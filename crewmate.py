@@ -51,10 +51,10 @@ class Crewmate():
         self.scaleh = scaleh
 
         
-        self.list_of_ghost_rect = [Area(self.x-width/2, self.y, width/2, height/2),
-                                   Area(self.x+width/2, self.y, width/2, height/2),
-                                   Area(self.x, self.y-300, width/2, height/2),
-                                   Area(self.x, self.y+300, width/2, height/2)]
+        self.list_of_ghost_rect = [self.Area(self.x-width/2, self.y, width/2, height/2),
+                                   self.Area(self.x+width/2, self.y, width/2, height/2),
+                                   self.Area(self.x, self.y-300, width/2, height/2),
+                                   self.Area(self.x, self.y+300, width/2, height/2)]
 
     def show(self):
         image(self.image_of_crewmate, self.x, self.y, self.rx, self.ry)
