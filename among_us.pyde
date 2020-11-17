@@ -153,7 +153,7 @@ def draw():
                 player_crewmate.show()
                 use.show(use_button)
                 #player_crewmate.him_tasks()
-                #player_crewmate.scale_()
+                player_crewmate.scale_()
                 bot_impostor.show()
                 bot_impostor.move()
                 bot_impostor.kill_player()

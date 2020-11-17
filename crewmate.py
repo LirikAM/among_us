@@ -64,12 +64,12 @@ class Crewmate():
         fill(255,255,255)
 
         ###ghost_rect_x_for_bot_impostor
-        rectMode(RIGHT)
         noFill()
         noStroke()
         for ghost_rect in self.list_of_ghost_rect:
             rect(ghost_rect.x, ghost_rect.y, ghost_rect.w, ghost_rect.h)
-        noStroke()
+        stroke(0,0,0)
+        fill(255,255,255)
         ###ghost_rect_x_for_bot_impostor
 
     def him_tasks(self):
