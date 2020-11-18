@@ -30,7 +30,3 @@ class EnterName():
             self.select = True
         else:
             self.select = False
-
-    def replace(self):
-        if self.select:
-            pass

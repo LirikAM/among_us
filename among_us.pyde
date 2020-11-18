@@ -181,13 +181,11 @@ def draw():
                             if meteorits[i].show_on_background():
                                 meteorits[i].show()
 
-                            if meteorits[i].select2:
+                            if meteorits[i].select:
                                 quantity_meteorits = quantity_meteorits + 1   
 
                             if meteorits[i].select or meteorits[i].delite():
                                 del meteorits[i]
-                                print('everything are working')
-
                             else:
                                 i = i+1
 
@@ -258,9 +256,8 @@ def keyPressed():
     if character_selection.select_to_choose == 0:
         if enter_name.select:
             if enter_name.numb < 10:
-                enter_name.text_ = enter_name.text_ + str(key)
+                enter_name.text_ = enter_name.text_ + key
                 enter_name.numb  = enter_name.numb + 1
-        
 
 def mousePressed():
     global use, meteorits, player_crewmate, start_game, exit_game, impostor, experimental_for_impostor, button_to_report, bot_crewmate
@@ -275,6 +272,9 @@ def mousePressed():
         if character_selection.select_to_choose == 1:
             if place_task.distance(player_crewmate.x, player_crewmate.y, player_crewmate.rx, player_crewmate.ry):
                 use.pressing()# give to us True or False
+            if use.select:
+                for i in range(0,len(meteorits)):
+                    meteorits[i].boom()# give to us True or False
 
         elif character_selection.select_to_choose == 2:
             if experimental_for_impostor.select:
@@ -289,7 +289,3 @@ def mousePressed():
             if not experimental_for_impostor.select:
                 if impostor.distance(experimental_for_impostor.x, experimental_for_impostor.y, player_crewmate.rx+100, player_crewmate.ry+50):    
                     button_to_report.pressing()
-
-            if use.select:
-                for i in range(0,len(meteorits)):
-                    meteorits[i].boom()# give to us True or False

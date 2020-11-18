@@ -1,10 +1,9 @@
 class TaskWeapons():
     x = 0
     y = 0
-    r = 30
+    r = 50
     speed = 0
     select = False
-    select2 = False
     x2 = 0
     y2 = 0
     r2 = 0
@@ -30,8 +29,6 @@ class TaskWeapons():
 
         if self.x < self.x2 + self.r2/2:
             return True
-        else:
-            return False
 
     def delite(self):
         return self.x2 - self.r2/2 > self.x    
@@ -39,9 +36,4 @@ class TaskWeapons():
     def boom(self):
         if (self.x - self.r/2 < mouseX and mouseX < self.x + self.r/2 and
             self.y - self.r/2 < mouseY and mouseY < self.y + self.r/2):
-                self.select = True
-                print('55')
-
-                self.select2 = True
-        else:
-                self.select2 = False
+            self.select = True
