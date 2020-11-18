@@ -86,13 +86,8 @@ class Crewmate():
         rect(self.scalex, self.scaley, self.scalew, self.scaleh)
 
     def scale_fill(self):
-        numb = 30
-        rectMode(LEFT)
-        if self.scalew < numb:
-            self.scalew = self.scalew - 5
-            fill(0,255,0)
-            rect(self.scalex, self.scaley, self.scalew, self.scaleh)
-        rectMode(CENTER)
+        fill(0,255,0)
+        rect(self.scalex-self.scalew/3, self.scaley, self.scalew/3, self.scaleh)
 
     def move(self,dir):
         if dir == LEFT:

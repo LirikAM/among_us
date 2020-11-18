@@ -26,7 +26,6 @@ class TaskWeapons():
         self.x = self.x - self.speed    
 
     def show_on_background(self):
-
         if self.x < self.x2 + self.r2/2:
             return True
 
