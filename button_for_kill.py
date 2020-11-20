@@ -17,4 +17,3 @@ class ButtonForKill():
         if (mouseX > self.x - self.w/2 and mouseX < self.x + self.w/2 and
             mouseY > self.y - self.h/2 and mouseY < self.y + self.h/2):
             return True
-            print('ok')

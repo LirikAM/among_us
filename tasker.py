@@ -3,17 +3,17 @@ class Tasker():
     y = 0
     rx = 0
     ry = 0
-    
-    x2 = 400
-    y2 = 300
+
+    x2 = 0
+    y2 = 0
     r2 = 400
-    
+
     the_sofa = None
-    
+
     t_rx = 0
     t_ry = 0
-    
-    def __init__(self,x,y, the_sofa, rx, ry):
+
+    def __init__(self,x,y, the_sofa, rx, ry, x2, y2):
         self.x = x
         self.y = y
         self.the_sofa = the_sofa
@@ -23,10 +23,13 @@ class Tasker():
         
         self.t_rx = rx
         self.t_ry = ry
-        
+
+        self.x2 = x2
+        self.y2 = y2
+
     def show(self):
         image(self.the_sofa, self.x, self.y, self.rx, self.ry)
-        
+
     def show_line(self):
         #line
         strokeWeight(7)
@@ -39,7 +42,7 @@ class Tasker():
         rect(mouseX, mouseY, 100, 100)
         strokeWeight(0)
         #line
-        
+
     def show_background(self):
         fill(79,170,19)
         rect(self.x2, self.y2, self.r2, self.r2)
@@ -49,10 +52,9 @@ class Tasker():
 
         dx = abs(player_crewmate_x - self.x)
         dy = abs(player_crewmate_y - self.y)
-        
+
         if ((dy <= player_crewmate_ry/2 + self.t_ry/2) and
             (dx <= player_crewmate_rx/2 + self.t_rx/2)):
             return True
         else:
             return False
-        

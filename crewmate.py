@@ -1,6 +1,6 @@
 class Crewmate():
-    x = 400
-    y = 300
+    x = 0
+    y = 0
     rx = 100
     ry = 150
     name = ''
@@ -31,11 +31,15 @@ class Crewmate():
             self.x = x
             self.y = y
             self.w = w
+            self.h = h
 
     list_of_ghost_rect = []
 
-    def __init__(self, player_crewmate_black, xt, yt, wt, ht, scalex, scaley, scalew, scaleh, xtask, ytask):
+    def __init__(self, player_crewmate_black, xt, yt, wt, ht, scalex, scaley, scalew, scaleh, xtask, ytask, x, y):
         self.image_of_crewmate = player_crewmate_black
+
+        self.x = x
+        self.y = y
 
         self.xt = xt
         self.yt = yt
@@ -51,10 +55,10 @@ class Crewmate():
         self.scaleh = scaleh
 
         
-        self.list_of_ghost_rect = [self.Area(self.x-width/2, self.y, width/2, height/2),
-                                   self.Area(self.x+width/2, self.y, width/2, height/2),
-                                   self.Area(self.x, self.y-300, width/2, height/2),
-                                   self.Area(self.x, self.y+300, width/2, height/2)]
+        self.list_of_ghost_rect = [self.Area(self.x-200, self.y, width/4, height/2),
+                                   self.Area(self.x+200, self.y, width/4, height/2),
+                                   self.Area(self.x, self.y-300, width/4, height/2),
+                                   self.Area(self.x, self.y+300, width/4, height/2)]
 
     def show(self):
         image(self.image_of_crewmate, self.x, self.y, self.rx, self.ry)

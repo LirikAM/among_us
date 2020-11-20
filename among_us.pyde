@@ -15,6 +15,7 @@ from bot_crewmate import BotCrewmate
 from online_game import OnlineGame
 from enter_name import EnterName
 from bot_impostor import BotImpostor
+from press_to_go_out import PressGoOut
 ##Import
             
 #class TaskElectric():
@@ -32,6 +33,7 @@ bot_crewmate                 = None
 online_game                  = None
 enter_name                   = None
 bot_impostor                 = None
+press_to_go_out              = None
 
 player_creemate_black        = None
 the_sofa                     = None
@@ -62,10 +64,11 @@ add_library("minim")
 #music
 
 def setup():
-    size(800,600)
+    size(1024,600)
     
     global player_crewmate, place_task, use, meteorits, player_crewmate_black, the_sofa, start_game, report, button_to_report, filtrofwords, bot_crewmate, dead_body, minim, play_music_report, enter_name, t, bot_impostor
     global exit_game, character_selection, impostor, experimental_red, experimental_red_isnot_alive, experimental_for_impostor, button_for_kill, use_button, kill_button, start_button, online_game, file_for_name
+    global press_to_go_out
     
     rectMode(CENTER)
     textAlign(CENTER)
@@ -91,8 +94,8 @@ def setup():
     
     start_game                = ButtonToStartGame(width/2, height/2)
     exit_game                 = ExitGame(width/2, height/2+200, 100, 45)
-    place_task                = Tasker(width/2-200,height/2-200, the_sofa, 200, 200) 
-    player_crewmate           = Crewmate(player_crewmate_black, width-200, height/2-200, 300, 200, width/2, height/2+250, 500, 25, place_task.x, place_task.y)
+    place_task                = Tasker(width/2-200,height/2-200, the_sofa, 200, 200, width/2, height/2) 
+    player_crewmate           = Crewmate(player_crewmate_black, width-200, height/2-200, 300, 200, width/2, height/2+250, 500, 25, place_task.x, place_task.y, width/2, height/2)
     experimental_for_impostor = ExperimentalForImpostor(int(random(width/2-250,width/2+250)), 500)
     bot_crewmate              = BotCrewmate(width+width/2, height/2-100, player_crewmate.rx, player_crewmate.ry, player_crewmate_black, player_crewmate.speed, dead_body)
     impostor                  = Impostor(width/2, height/2, player_crewmate.xt, player_crewmate.yt, player_crewmate.wt, player_crewmate.ht, 
@@ -104,7 +107,8 @@ def setup():
     filtrofwords              = FiltrOfWords()
     online_game               = OnlineGame(width/2, height-200, use.r_x, use.r_y)
     enter_name                = EnterName(width/2, height/2+200, 300, 50)
-    bot_impostor              = BotImpostor(width+width, height/2, player_crewmate.rx, player_crewmate.ry, experimental_red)
+    bot_impostor              = BotImpostor(width, height/2, player_crewmate.rx, player_crewmate.ry, experimental_red, width/2-425, height/2, use.r_x, use.r_y)
+    press_to_go_out           = PressGoOut(place_task.x2+place_task.r2/2, place_task.y2-place_task.r2/2, 50, 50)
 
     file_for_name = open("file_save_name.txt", "r")
     t = file_for_name.readline()
@@ -115,7 +119,7 @@ def setup():
 
 def draw():
     global player_crewmate, place_task, use, meteorits, quantity_meteorits, start_game, character_selection, impostor, use_button, kill_button, button_for_kill, start_button, button_to_report, report, filtrofwords
-    global online_game, experimental_for_impostor, bot_crewmate, enter_name, file_for_name, t, bot_impostor
+    global online_game, experimental_for_impostor, bot_crewmate, enter_name, file_for_name, t, bot_impostor, press_to_go_out
     
     background(255,255,255)
     
@@ -133,6 +137,7 @@ def draw():
         if character_selection.select_to_choose == 0:
             character_selection.show(player_crewmate.rx, player_crewmate.rx, player_crewmate_black)
             enter_name.show(t)
+            bot_impostor.show_to_hide_impostor()
             player_crewmate.name = enter_name.text_
             if t == '':
                 file_for_name = open("file_save_name.txt", "w")
@@ -147,17 +152,25 @@ def draw():
             place_task.show()
             button_to_report.show_report(report)
             ##show()
-            
+
             if character_selection.select_to_choose == 1:
                 
                 player_crewmate.show()
                 use.show(use_button)
                 #player_crewmate.him_tasks()
                 player_crewmate.scale_()
-                bot_impostor.show()
-                bot_impostor.move()
-                bot_impostor.kill_player()
 
+                if not bot_impostor.select_impostor:
+                    bot_impostor.show()
+
+                    if bot_impostor.kill_player(player_crewmate.list_of_ghost_rect):
+                        pass
+                    else:
+                        bot_impostor.move()
+
+                bot_impostor.distance(player_crewmate.x, player_crewmate.y, player_crewmate.rx, player_crewmate.ry)
+                if bot_impostor.select:
+                    bot_impostor.kill_you()
                 ###return xtask and ytask
                 place_task.x, place_task.y = player_crewmate.return_task()
                 ###return xtask and ytask
@@ -166,33 +179,39 @@ def draw():
 
                     place_task.show_background()
                     place_task.show_line()
+                    press_to_go_out.show()
 
                     numb = 20
                     fill(0,0,0)
                     text(str(quantity_meteorits) + '/' + str(numb), width/2, height/2+200)
                     fill(255,255,255)
 
-                    if quantity_meteorits < numb:
+                    if press_to_go_out.select:
+                        use.select = False
 
-                        i = 0
-                        while i < len(meteorits):
-                            meteorits[i].move()
-
-                            if meteorits[i].show_on_background():
-                                meteorits[i].show()
-
-                            if meteorits[i].select:
-                                quantity_meteorits = quantity_meteorits + 1   
-
-                            if meteorits[i].select or meteorits[i].delite():
-                                del meteorits[i]
-                            else:
-                                i = i+1
-
-                        if len(meteorits) < 2:
-                            meteorits.append(TaskWeapons(width, int(random(place_task.y2 - place_task.r2/2, place_task.y2 + place_task.r2/2)), int(random(2,7)), place_task.x2, place_task.y2, place_task.r2))
                     else:
-                        player_crewmate.scale_fill()
+
+                        if quantity_meteorits < numb:
+    
+                            i = 0
+                            while i < len(meteorits):
+                                meteorits[i].move()
+    
+                                if meteorits[i].show_on_background():
+                                    meteorits[i].show()
+    
+                                if meteorits[i].select:
+                                    quantity_meteorits = quantity_meteorits + 1   
+    
+                                if meteorits[i].select or meteorits[i].delite():
+                                    del meteorits[i]
+                                else:
+                                    i = i+1
+    
+                            if len(meteorits) < 2:
+                                meteorits.append(TaskWeapons(width, int(random(place_task.y2 - place_task.r2/2, place_task.y2 + place_task.r2/2)), int(random(2,7)), place_task.x2, place_task.y2, place_task.r2))
+                        else:
+                            player_crewmate.scale_fill()
 
             elif character_selection.select_to_choose == 2:
                 impostor.show(player_crewmate_black)
@@ -230,15 +249,15 @@ def draw():
         if start_game.select_game:
     
             if character_selection.select_to_choose == 1:
-    
-                if key == 'a':
-                    player_crewmate.move(LEFT)
-                elif key == 'd':
-                    player_crewmate.move(RIGHT)
-                elif key == 'w':
-                    player_crewmate.move(UP)
-                elif key == 's':
-                    player_crewmate.move(DOWN)
+                if not bot_impostor.after_kill_u:
+                    if key == 'a':
+                        player_crewmate.move(LEFT,)
+                    elif key == 'd':
+                        player_crewmate.move(RIGHT)
+                    elif key == 'w':
+                        player_crewmate.move(UP)
+                    elif key == 's':
+                        player_crewmate.move(DOWN)
     
             elif character_selection.select_to_choose == 2:
     
@@ -252,15 +271,18 @@ def draw():
                     impostor.move(DOWN)
 
 def keyPressed():
-    global file_for_name, character_selection, t
+    global file_for_name, character_selection, t, enter_name
     if character_selection.select_to_choose == 0:
         if enter_name.select:
             if enter_name.numb < 10:
                 enter_name.text_ = enter_name.text_ + key
                 enter_name.numb  = enter_name.numb + 1
+        #if ord(str(key)) == 8:
+        #    enter_name.text_ = enter_name.text_[:-1]
+
 
 def mousePressed():
-    global use, meteorits, player_crewmate, start_game, exit_game, impostor, experimental_for_impostor, button_to_report, bot_crewmate
+    global use, meteorits, player_crewmate, start_game, exit_game, impostor, experimental_for_impostor, button_to_report, bot_crewmate, bot_impostor, press_to_go_out
 
     if not start_game.select_game:
         start_game.push_button()
@@ -275,6 +297,7 @@ def mousePressed():
             if use.select:
                 for i in range(0,len(meteorits)):
                     meteorits[i].boom()# give to us True or False
+                press_to_go_out.pressing()
 
         elif character_selection.select_to_choose == 2:
             if experimental_for_impostor.select:
@@ -285,6 +308,7 @@ def mousePressed():
 
         elif character_selection.select_to_choose == 0:
             enter_name.pressing()
+            bot_impostor.press_to_hide_impostor()
 
             if not experimental_for_impostor.select:
                 if impostor.distance(experimental_for_impostor.x, experimental_for_impostor.y, player_crewmate.rx+100, player_crewmate.ry+50):    
