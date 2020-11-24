@@ -54,7 +54,6 @@ class Crewmate():
         self.scalew = scalew
         self.scaleh = scaleh
 
-        
         self.list_of_ghost_rect = [self.Area(self.x-200, self.y, width/4, height/2),
                                    self.Area(self.x+200, self.y, width/4, height/2),
                                    self.Area(self.x, self.y-300, width/4, height/2),
@@ -93,18 +92,24 @@ class Crewmate():
         fill(0,255,0)
         rect(self.scalex-self.scalew/3, self.scaley, self.scalew/3, self.scaleh)
 
-    def move(self,dir):
+    def move(self,dir,bot_impostor_x,bot_impostor_y,bot_impostor_speed):
         if dir == LEFT:
             self.xtask = self.xtask+self.speed
+            bot_impostor_x = bot_impostor_x + bot_impostor_speed
 
         elif dir == RIGHT:
             self.xtask = self.xtask-self.speed
+            bot_impostor_x = bot_impostor_x - bot_impostor_speed
 
         elif dir == UP:
             self.ytask = self.ytask+self.speed
+            bot_impostor_y = bot_impostor_y + bot_impostor_speed
 
         elif dir == DOWN:
             self.ytask = self.ytask-self.speed
+            bot_impostor_y = bot_impostor_y - bot_impostor_speed
+
+        return bot_impostor_x, bot_impostor_y
 
     def return_task(self):
         return self.xtask, self.ytask

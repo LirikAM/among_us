@@ -5,21 +5,18 @@ class Impostor():
     ry = 150
     speed = 5
     name = ''
+    dx = 0
+    dy = 0
 
     xt = 0
     yt = 0
     wt = 0
     ht = 0
 
-    xtask = 0
-    ytask = 0
-
     x_experimental_for_impostor = 0
     y_experimental_for_impostor = 0
 
-    y_bot_crewmate = 0
-
-    def __init__(self, x, y, xt, yt, wt, ht, xtask, ytask, x_experimental_for_impostor, y_experimental_for_impostor, y_bot_crewmate):
+    def __init__(self, x, y, xt, yt, wt, ht):
         self.x = x
         self.y = y
 
@@ -28,45 +25,43 @@ class Impostor():
         self.wt = wt
         self.ht = ht
 
-        self.xtask = xtask
-        self.ytask = ytask
-
-        self.x_experimental_for_impostor = x_experimental_for_impostor
-        self.y_experimental_for_impostor = y_experimental_for_impostor
-
-        self.y_bot_crewmate = y_bot_crewmate
-
     def show(self,impostor):
         image(impostor, self.x, self.y, self.rx, self.ry)
         fill(0,0,0)
         text(self.name, self.x, self.y-50, self.rx, self.ry)
         fill(255,255,255)
 
-    def move(self,dir):
+    def move(self,dir,bot_crewmate_x,bot_crewmate_y,bot_crewmate_speed,experimental_for_impostor_x,experimental_for_impostor_y,place_task_x,place_task_y):
 
         if dir == LEFT:
-            self.xtask = self.xtask + self.speed
+            place_task_x = place_task_x + self.speed
             ###
-            self.x_experimental_for_impostor = self.x_experimental_for_impostor + self.speed
+            experimental_for_impostor_x = experimental_for_impostor_x + self.speed
+            ###
+            bot_crewmate_x = bot_crewmate_x + bot_crewmate_speed
             ###
         elif dir == RIGHT:
-            self.xtask = self.xtask - self.speed
+            place_task_x = place_task_x - self.speed
             ###
-            self.x_experimental_for_impostor = self.x_experimental_for_impostor - self.speed
+            experimental_for_impostor_x = experimental_for_impostor_x - self.speed
+            ###
+            bot_crewmate_x = bot_crewmate_x - bot_crewmate_speed
             ###
         elif dir == UP:
-            self.ytask = self.ytask + self.speed
+            place_task_y = place_task_y + self.speed
             ###
-            self.y_experimental_for_impostor = self.y_experimental_for_impostor + self.speed
+            experimental_for_impostor_y = experimental_for_impostor_y + self.speed
             ###
-            self.y_bot_crewmate = self.y_bot_crewmate + self.speed
+            bot_crewmate_y = bot_crewmate_y + bot_crewmate_speed
             ###
         elif dir == DOWN:
-            self.ytask = self.ytask - self.speed
+            place_task_y = place_task_y - self.speed
             ###
-            self.y_experimental_for_impostor = self.y_experimental_for_impostor - self.speed
+            experimental_for_impostor_y = experimental_for_impostor_y - self.speed
             ###
-            self.y_bot_crewmate = self.y_bot_crewmate - self.speed
+            bot_crewmate_y = bot_crewmate_y - bot_crewmate_speed
+
+        return bot_crewmate_x, bot_crewmate_y, experimental_for_impostor_x, experimental_for_impostor_y, place_task_x, place_task_y
 
     def him_tasks(self):
         fill(255,255,255)
@@ -85,15 +80,3 @@ class Impostor():
             return True
         else:
             return False
-
-    ### return function
-
-    def return_task(self):
-        return self.xtask, self.ytask
-
-    def return_experimental_for_impostor(self):
-        return self.x_experimental_for_impostor, self.y_experimental_for_impostor
-
-    def return_bot_crewmate(self):
-        return self.y_bot_crewmate
-    ### return fucntion

@@ -94,21 +94,21 @@ def setup():
     
     start_game                = ButtonToStartGame(width/2, height/2)
     exit_game                 = ExitGame(width/2, height/2+200, 100, 45)
-    place_task                = Tasker(width/2-200,height/2-200, the_sofa, 200, 200, width/2, height/2) 
+    place_task                = Tasker(width/2-200,height/2-200, the_sofa, 200, 200, width/2, height/2)
+    use                       = UseButton(width-100, height/2+150, 150, 150)
     player_crewmate           = Crewmate(player_crewmate_black, width-200, height/2-200, 300, 200, width/2, height/2+250, 500, 25, place_task.x, place_task.y, width/2, height/2)
     experimental_for_impostor = ExperimentalForImpostor(int(random(width/2-250,width/2+250)), 500)
-    bot_crewmate              = BotCrewmate(width+width/2, height/2-100, player_crewmate.rx, player_crewmate.ry, player_crewmate_black, player_crewmate.speed, dead_body)
-    impostor                  = Impostor(width/2, height/2, player_crewmate.xt, player_crewmate.yt, player_crewmate.wt, player_crewmate.ht, 
-                                         place_task.x, place_task.y, experimental_for_impostor.x, experimental_for_impostor.y, bot_crewmate.y)
+    bot_crewmate              = BotCrewmate(width, height/2-100, player_crewmate.rx, player_crewmate.ry, player_crewmate_black, player_crewmate.speed, dead_body)
+    impostor                  = Impostor(width/2, height/2, player_crewmate.xt, player_crewmate.yt, player_crewmate.wt, player_crewmate.ht)
+                                         
     character_selection       = CharacterSelection(width/2-200, height/2, 250, 300, width/2+200)
-    use                       = UseButton(width-100, height/2+150, 150, 150)
     button_for_kill           = ButtonForKill(use.x, use.y, use.r_x, use.r_y)
     button_to_report          = ButtonToReport(use.x, use.y-200, use.r_x, use.r_y)
     filtrofwords              = FiltrOfWords()
     online_game               = OnlineGame(width/2, height-200, use.r_x, use.r_y)
     enter_name                = EnterName(width/2, height/2+200, 300, 50)
-    bot_impostor              = BotImpostor(width, height/2, player_crewmate.rx, player_crewmate.ry, experimental_red, width/2-425, height/2, use.r_x, use.r_y)
     press_to_go_out           = PressGoOut(place_task.x2+place_task.r2/2, place_task.y2-place_task.r2/2, 50, 50)
+    bot_impostor              = BotImpostor(width, height/2, player_crewmate.rx, player_crewmate.ry, experimental_red, width/2-425, height/2, use.r_x, use.r_y)
 
     file_for_name = open("file_save_name.txt", "r")
     t = file_for_name.readline()
@@ -192,22 +192,22 @@ def draw():
                     else:
 
                         if quantity_meteorits < numb:
-    
+
                             i = 0
                             while i < len(meteorits):
                                 meteorits[i].move()
-    
+
                                 if meteorits[i].show_on_background():
                                     meteorits[i].show()
-    
+
                                 if meteorits[i].select:
                                     quantity_meteorits = quantity_meteorits + 1   
-    
+
                                 if meteorits[i].select or meteorits[i].delite():
                                     del meteorits[i]
                                 else:
                                     i = i+1
-    
+
                             if len(meteorits) < 2:
                                 meteorits.append(TaskWeapons(width, int(random(place_task.y2 - place_task.r2/2, place_task.y2 + place_task.r2/2)), int(random(2,7)), place_task.x2, place_task.y2, place_task.r2))
                         else:
@@ -222,21 +222,32 @@ def draw():
 
                 impostor.name = enter_name.text_
 
-                ###return task
-                place_task.x, place_task.y = impostor.return_task()
-                ###return task
-
-                ###return experimental_for_impostor
-                experimental_for_impostor.x, experimental_for_impostor.y = impostor.return_experimental_for_impostor()
-                ###return experimental_for_impostor
-
-                ###return bot_crewmate
-                bot_crewmate.y = impostor.return_bot_crewmate()
-                ###return bot_crewmate
+                if abs(impostor.dx) != 0:
+                    #impostor.x = impostor.x - dx
+                    #dx = 0
+                    if impostor.dx <= 0:
+                        impostor.x = impostor.x + abs(impostor.dx)
+                        impostor.dx = 0
+                    elif impostor.dx >= 0:
+                        impostor.x = impostor.x - abs(impostor.dx)
+                        impostor.dx = 0
+                    if impostor.dy <= 0:
+                        impostor.y = impostor.y + abs(impostor.dy)
+                        impostor.dy = 0
+                    elif impostor.dy >= 0:
+                        impostor.y = impostor.y - abs(impostor.dy)
+                        impostor.dy = 0
+                        #while dx != 0:
+                         #   impostor.x = impostor.x + 1
+                         #   print(str(dx))
+                         #   dx = dx + 1
+                        #while dx != 0:
+                         #   impostor.x = impostor.x - 1
+                         #   print(str(dx))
+                         #   dx = dx - 1
 
                 if button_to_report.select_to_show_back == True:
                     filtrofwords.show()
-
                 experimental_for_impostor.show_alive(experimental_red, player_crewmate.rx, player_crewmate.ry)
                 experimental_for_impostor.show_not_alive(experimental_red_isnot_alive, 100, 100)
                 if bot_crewmate.distance():
@@ -247,28 +258,29 @@ def draw():
     ###keyPressed
     if keyPressed:
         if start_game.select_game:
-    
+
             if character_selection.select_to_choose == 1:
                 if not bot_impostor.after_kill_u:
                     if key == 'a':
-                        player_crewmate.move(LEFT,)
+                        bot_impostor.x,bot_impostor.y = player_crewmate.move(LEFT,bot_impostor.x,bot_impostor.y,bot_impostor.speed)
                     elif key == 'd':
-                        player_crewmate.move(RIGHT)
+                        bot_impostor.x,bot_impostor.y = player_crewmate.move(RIGHT,bot_impostor.x,bot_impostor.y,bot_impostor.speed)
                     elif key == 'w':
-                        player_crewmate.move(UP)
+                        bot_impostor.x,bot_impostor.y = player_crewmate.move(UP,bot_impostor.x,bot_impostor.y,bot_impostor.speed)
                     elif key == 's':
-                        player_crewmate.move(DOWN)
-    
+                        bot_impostor.x,bot_impostor.y = player_crewmate.move(DOWN,bot_impostor.x,bot_impostor.y,bot_impostor.speed)
+
             elif character_selection.select_to_choose == 2:
-    
                 if key == 'a':
-                    impostor.move(LEFT)
+                    bot_crewmate.x, bot_crewmate.y, experimental_for_impostor.x, experimental_for_impostor.y, place_task.x, place_task.y = impostor.move(LEFT,bot_crewmate.x,bot_crewmate.y,bot_crewmate.speed,experimental_for_impostor.x,experimental_for_impostor.y,place_task.x,place_task.y)
                 elif key == 'd':
-                    impostor.move(RIGHT)
+                    bot_crewmate.x, bot_crewmate.y, experimental_for_impostor.x, experimental_for_impostor.y, place_task.x, place_task.y = impostor.move(RIGHT,bot_crewmate.x,bot_crewmate.y,bot_crewmate.speed,experimental_for_impostor.x,experimental_for_impostor.y,place_task.x,place_task.y)
                 elif key == 'w':
-                    impostor.move(UP)
+                    bot_crewmate.x, bot_crewmate.y, experimental_for_impostor.x, experimental_for_impostor.y, place_task.x, place_task.y = impostor.move(UP,bot_crewmate.x,bot_crewmate.y,bot_crewmate.speed,experimental_for_impostor.x,experimental_for_impostor.y,place_task.x,place_task.y)
                 elif key == 's':
-                    impostor.move(DOWN)
+                    bot_crewmate.x, bot_crewmate.y, experimental_for_impostor.x, experimental_for_impostor.y, place_task.x, place_task.y = impostor.move(DOWN,bot_crewmate.x,bot_crewmate.y,bot_crewmate.speed,experimental_for_impostor.x,experimental_for_impostor.y,place_task.x,place_task.y)
+                    
+                    
 
 def keyPressed():
     global file_for_name, character_selection, t, enter_name
@@ -276,7 +288,7 @@ def keyPressed():
         if enter_name.select:
             if enter_name.numb < 10:
                 enter_name.text_ = enter_name.text_ + key
-                enter_name.numb  = enter_name.numb + 1
+                enter_name.numb  = enter_name.numb  + 1
         #if ord(str(key)) == 8:
         #    enter_name.text_ = enter_name.text_[:-1]
 
@@ -304,12 +316,13 @@ def mousePressed():
                 if impostor.distance(experimental_for_impostor.x, experimental_for_impostor.y, player_crewmate.rx+100, player_crewmate.ry+50):
                     if button_for_kill.pressing():
                         impostor.x = experimental_for_impostor.x
+                        impostor.y = experimental_for_impostor.y
+                        impostor.dx = impostor.x - width/2
+                        impostor.dy = impostor.y - height/2
                         experimental_for_impostor.select = not True
+                    if not experimental_for_impostor.select:
+                        button_to_report.pressing()
 
         elif character_selection.select_to_choose == 0:
             enter_name.pressing()
             bot_impostor.press_to_hide_impostor()
-
-            if not experimental_for_impostor.select:
-                if impostor.distance(experimental_for_impostor.x, experimental_for_impostor.y, player_crewmate.rx+100, player_crewmate.ry+50):    
-                    button_to_report.pressing()
